@@ -6,19 +6,25 @@ void encabezado(){
 }
 int main(){
 	int b=0,a,c=0,stk;;
-	char *item[5]={"Papa","Tomate","Lechuga","Zanahoria","Cebolla"};
+	char *item[6]={"Papa","Tomate","Lechuga","Zanahoria","Cebolla","Acelga"};
 	int producto=0;
 	int i=0;
-	float cuenta[5]={0,0,0,0,0};
-	float precios[5]={40,71.3,30,20,73};
-	float stock[5]={100,100,100,100,100};
+	float cuenta[6]={0,0,0,0,0,0};
+	float precios[6];
+	float stock[6];
 	float peso=0;
 	float cuentaTotal=0;
 	float pago=0;
-	float facturacion[5]={0,0,0,0,0};
-	float facturacionTotal=0;
+	float facturacion[6];
+	float facturacionTotal;
 	
-
+	FILE *fp;
+	fp=fopen("archivo.txt","r");
+	for(i=0;i<6;i++) fscanf(fp,"%f",&precios[i]);
+	for(i=0;i<6;i++) fscanf(fp,"%f",&stock[i]);
+	for(i=0;i<6;i++) fscanf(fp,"%f ",&facturacion[i]);
+	fscanf(fp,"%f ",&facturacionTotal);
+	fclose(fp);
 	
 	do{
 	system("cls");	
@@ -42,11 +48,12 @@ int main(){
 			encabezado();
 			printf("Cual producto desea?\t-1 para finalizar\n\t\t\t-2 para anular producto\n\n");
 			printf("Producto\r\t\tPrecio\tCuenta\tStock\n\n");
-			for(i=0;i<5;i++) printf("%i. %s\r\t\t%.2f\t%.2f\t%.2f\n",i+1,item[i],precios[i],cuenta[i],stock[i]);
+			for(i=0;i<6;i++) printf("%i. %s\r\t\t%.2f\t%.2f\t%.2f\n",i+1,item[i],precios[i],cuenta[i],stock[i]);
+			printf("\nTotal: \t\t%.2f\n",cuentaTotal);
 			printf("Producto: ");
 			scanf("%i",&producto);
 			
-			while(producto<-2||producto>5){
+			while(producto<-2||producto>6){
 				printf("Opcion incorrecta\nIntente nuevamente: ");
 				scanf("%i",&producto);
 				if (producto==-1)break;
@@ -65,7 +72,7 @@ int main(){
 			}
 			
 			cuentaTotal=0;
-			for(i=0;i<5;i++) cuentaTotal+=cuenta[i];
+			for(i=0;i<6;i++) cuentaTotal+=cuenta[i];
 			system("pause");
 			}while(producto!=-1);
 			
@@ -75,14 +82,16 @@ int main(){
 				encabezado();
 				printf("Cual producto desea anular?: \t-1=Salir\n\n\n");
 				printf("Producto\r\t\tPrecio\tCuenta\n\n");
-				for(i=0;i<5;i++) printf("%i. %s\r\t\t%.2f\t%.2f\n",i+1,item[i],precios[i],cuenta[i]);
+				for(i=0;i<6;i++) printf("%i. %s\r\t\t%.2f\t%.2f\n",i+1,item[i],precios[i],cuenta[i]);
 				printf("Producto?: ");
 				scanf("%i",&producto);
 				stock[producto-1]+=cuenta[producto-1]/precios[producto-1];
 				cuenta[producto-1]=0;
 				}while(producto!=-1);
 				cuentaTotal=0;
-				for(i=0;i<5;i++) cuentaTotal+=cuenta[i];
+				for(i=0;i<6;i++) cuentaTotal+=cuenta[i];
+				
+				
 			}
 			break;
 	
@@ -90,8 +99,8 @@ int main(){
 			system("cls");
 			encabezado();
 			printf("Lista de precios:\n\n");
-			printf("Producto\r\t\tPrecio\tCuenta\tStock\n\n");
-			for(i=0;i<5;i++)printf("\t%s:\r\t\t\t%.2f\t%.2f\n", item[i],precios[i],stock[i]);
+			printf("\tProducto\r\t\t\tPrecio\tStock\n\n");
+			for(i=0;i<6;i++)printf("\t%s:\r\t\t\t%.2f\t%.2f\n", item[i],precios[i],stock[i]);
 			printf("\n");
 			system("pause");
 			
@@ -101,8 +110,14 @@ int main(){
 			system("cls");
 			encabezado();
 			printf("Cuenta actual:\n\n");
-			for(i=0;i<5;i++)printf("\t%s:\r\t\t\t%.2f\n", item[i],cuenta[i]);
-			printf("\n");
+			if(cuentaTotal==0) printf("No hay valores que mostrar\n\n");
+			else{
+			printf("\tProducto\tMonto\n\n");
+			for(i=0;i<6;i++)printf("\t%s:\r\t\t\t%.2f\n", item[i],cuenta[i]);
+			printf("\nTotal: %.2f\n\n",cuentaTotal);
+			}
+			
+			
 			system("pause");
 			break;
 			
@@ -110,7 +125,7 @@ int main(){
 			system("cls");
 			encabezado();
 			if(cuentaTotal!=0){
-			for(i=0;i<5;i++) printf("%s:\r\t\t %.2f\n",item[i],cuenta[i]);
+			for(i=0;i<6;i++) printf("%s:\r\t\t %.2f\n",item[i],cuenta[i]);
 			
 			printf("\nSu cuenta es de %.2f\nCon cuanto abona?: ",cuentaTotal);
 			scanf("%f",&pago);
@@ -119,8 +134,8 @@ int main(){
 				scanf("%f",&pago);
 			}
 			printf("Su vuelto es de: %.2f\nMuchas gracias\n",pago-cuentaTotal);
-			for(i=0;i<5;i++) facturacion[i]+=cuenta[i];
-			for(i=0;i<5;i++) cuenta[i]=0;
+			for(i=0;i<6;i++) facturacion[i]+=cuenta[i];
+			for(i=0;i<6;i++) cuenta[i]=0;
 			peso=0;
 			cuentaTotal=0;
 			pago=0;
@@ -138,6 +153,7 @@ int main(){
 			encabezado();
 			printf("Opciones de Sistemas\n");
 			printf("\t%s\n\t%s\n\t%s\n\t%s\n","1-Stock","2-Facturacion","3-Cambiar Precios","4-Salir de Sistemas");
+			printf("Opcion: ");
 			scanf("%i",&a);
 			switch (a){
 				case 1:
@@ -153,10 +169,10 @@ int main(){
 							system("cls");
 							encabezado();
 							printf("Que producto se redefine? -1 salir:\n");
-							for(i=0;i<5;i++) printf("%i- %s:\r\t\t%.2f\n",i+1,item[i],stock[i]);
+							for(i=0;i<6;i++) printf("%i- %s:\r\t\t%.2f\n",i+1,item[i],stock[i]);
 							printf("\nProducto:");
 							scanf("%i",&producto);
-							while(producto<-1||producto>5){
+							while(producto<-1||producto>6){
 								printf("Opcion incorrecta\nIntente nuevamente: ");
 								scanf("%i",&producto);
 							}
@@ -170,10 +186,10 @@ int main(){
 							system("cls");
 							encabezado();
 							printf("Cual producto agregamos stock? -1 salir:\n");
-							for(i=0;i<5;i++) printf("%i- %s:\r\t\t%.2f\n",i+1,item[i],stock[i]);
+							for(i=0;i<6;i++) printf("%i- %s:\r\t\t%.2f\n",i+1,item[i],stock[i]);
 							printf("\nProducto:");
 							scanf("%i",&producto);
-							while(producto<-1||producto>5){
+							while(producto<-1||producto>6){
 								printf("Opcion incorrecta\nIntente nuevamente: ");
 								scanf("%i",&producto);
 							}
@@ -190,9 +206,9 @@ int main(){
 					system("cls");
 					encabezado();
 					printf("Facturacion\n\n");
-					for(i=0;i<5;i++)printf("%s:\r\t\t%.2f\n",item[i],facturacion[i]);
+					for(i=0;i<6;i++)printf("%s:\r\t\t%.2f\n",item[i],facturacion[i]);
 					facturacionTotal=0;
-					for(i=0;i<5;i++)facturacionTotal+=facturacion[i];
+					for(i=0;i<6;i++)facturacionTotal+=facturacion[i];
 					printf("\nFacturacion total: %.2f\n",facturacionTotal);
 					system("pause");
 					break;
@@ -202,10 +218,10 @@ int main(){
 					encabezado();
 					printf("\tPrecios\n");
 					printf("\nCual producto desea cambiar precio\n-1 finalizar\n\n");
-					for(i=0;i<5;i++)printf("%i- %s:\r\t\t%.2f\n",i+1,item[i],precios[i]);
+					for(i=0;i<6;i++)printf("%i- %s:\r\t\t%.2f\n",i+1,item[i],precios[i]);
 					printf("Producto?: ");
 					scanf("%i",&producto);
-					while(producto<-1||producto>5){
+					while(producto<-1||producto>6){
 								printf("Opcion incorrecta\nIntente nuevamente: ");
 								scanf("%i",&producto);
 							}
@@ -220,12 +236,25 @@ int main(){
 					printf("Salir de Sistemas?\n1=si\n");
 					scanf("%i",&c);
 					
+					fp=fopen("archivo.txt","w");
+					for(i=0;i<6;i++) fprintf(fp,"%.2f ",precios[i]);
+					fprintf(fp,"\n");
+					for(i=0;i<6;i++) fprintf(fp,"%.2f ",stock[i]);
+					fclose(fp);
 					break;
 			}
 			}while(c!=1);
 			break;
 			
 		case 6:
+			fp=fopen("archivo.txt","w");
+					for(i=0;i<6;i++) fprintf(fp,"%.2f ",precios[i]);
+					fprintf(fp,"\n");
+					for(i=0;i<6;i++) fprintf(fp,"%.2f ",stock[i]);
+					fprintf(fp,"\n");
+					for(i=0;i<6;i++) fprintf(fp,"%.2f ",facturacion[i]);
+					fprintf(fp,"%.2f ",facturacionTotal);
+					fclose(fp);
 			printf("Seguro desea salir?\n1=si\nO presione tecla \"Ctrl\" + \"C\"\n");
 			scanf("%i",&b);
 			break;
@@ -237,4 +266,3 @@ int main(){
 	}while(b!=1);
 	return 0;
 }
-
